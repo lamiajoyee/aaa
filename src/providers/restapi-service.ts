@@ -1,47 +1,66 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, Jsonp, URLSearchParams, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
+import { Observable } from 'rxjs/Rx';
+import { serialize } from "serializer.ts/Serializer";
+import { RootObject } from '../models/root-model';
 
-/*
-  Generated class for the Restapi provider.
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class RestapiService {
 
-  data: any;
-  apiUrl = 'https://jsonplaceholder.typicode.com';
-
-  constructor(public http: Http) {
-    console.log('Hello Restapi Provider');
-  }
-
-  getUsers() {
-    if (this.data) {
-      return Promise.resolve(this.data);
+    baseUrl = "http://hetalia.wikia.com/api/v1/Articles/";
+    finalResponse1 = new Observable<RootObject[]>();
+    item:any;
+    constructor(public http: Http) {
+    
     }
 
-    return new Promise(resolve => {
-      this.http.get(this.apiUrl+'/users')
-        .map(res => res.json())
-        .subscribe(data => {
-          this.data = data;
-          resolve(this.data);
-        });
-    });
-  }
-
-  saveUser(data) {
-    return new Promise((resolve, reject) => {
-      this.http.post(this.apiUrl+'/users', JSON.stringify(data))
-        .subscribe(res => {
-          resolve(res);
-        }, (err) => {
-          reject(err);
-        });
-    });
-  }
-
+    fetchSingleItem(title){
+            var url = this.baseUrl + "Details&titles=" + title;
+           
+            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
+            let options = new RequestOptions({ headers: headers });
+            
+            var finalResponse = this.http.post(url , options).map((res: Response) => {
+               this.item = res.json();
+               return this.item;
+            })
+            return finalResponse;     
+    }
+        
+    fetchSingleItemDetails(title, paramType){
+        if(paramType=="id"){
+            var urlWithId='http://hetalia.wikia.com/api/v1/Articles/AsSimpleJson&id=' + title;
+            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
+            let options = new RequestOptions({ headers: headers });
+            var finalResponse = this.http.post(urlWithId , options).map((res => res.json()));
+            return finalResponse;
+        }
+        else{
+            var url1 = this.baseUrl + "Details&titles=" + title;
+            
+            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
+            let options = new RequestOptions({ headers: headers });
+            
+            var url2='http://hetalia.wikia.com/api/v1/Articles/AsSimpleJson&id=';
+        
+            this.finalResponse1= this.http.post(url1 , options).map((res: Response) => {
+                this.item = this.returnSingleObj(res.json());
+                return this.item;
+                })
+                .flatMap((item) => this.http.get(url2 + item.id)).map((res => res.json())).map(res => serialize<RootObject[]>(res));
+             
+            return this.finalResponse1;
+            
+        }
+    }
+ 
+    returnSingleObj(fullObject){
+        for(var id in fullObject.items){
+             return fullObject.items[id];     
+       }
+    }
 }
+
+

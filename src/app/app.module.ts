@@ -1,19 +1,18 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { AboutPage } from '../pages/about/about';
-import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
-import { TabsPage } from '../pages/tabs/tabs';
+import { DetailsPage } from '../pages/details/details';
 import { RestapiService } from '../providers/restapi-service';
+import { ExclusionFilterPipe } from '../pipes/exclusion-filter-pipe';
+import { Storage } from '@ionic/storage';
 
 @NgModule({
   declarations: [
     MyApp,
-    AboutPage,
-    ContactPage,
     HomePage,
-    TabsPage
+    DetailsPage,
+    ExclusionFilterPipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -21,11 +20,10 @@ import { RestapiService } from '../providers/restapi-service';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    AboutPage,
-    ContactPage,
     HomePage,
-    TabsPage
+    DetailsPage
   ],
-  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, RestapiService]
+  providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, RestapiService, Storage],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {}

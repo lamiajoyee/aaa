@@ -1,0 +1,46 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			{{title}}
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+
+<ion-content class="info">
+	<div class="banner" [ngStyle]="{'background': 'url(' + bannerUrl + ') ,  linear-gradient( #beebe8 0%, rgb(230, 228, 176)  100%)', 'background-repeat':'no-repeat',  'background-position-x' :'center'}"></div>
+	
+	<ion-item *ngFor="let info of characterInfo.sections">
+
+		<ion-card *ngIf="info.level==3">
+			<ion-card-header>
+				{{ info.title | exclusionfilter }}
+			</ion-card-header>
+			<ion-card-content>
+				<section *ngFor="let section1 of info.content ">
+					<p>{{ section1.text | exclusionfilter }}</p>
+				</section>
+			</ion-card-content>
+		</ion-card>
+
+		<section *ngIf="info.level!=3">
+			<h2 class="heading" [ngClass]="{redBackground : sectionHeaders.indexOf(info?.title) >= 0}">{{ info.title | exclusionfilter }}</h2>
+			<ul *ngFor="let section1 of info.content">
+				<p>{{ section1.text | exclusionfilter }}</p>
+				<li *ngFor="let section2 of section1.elements">
+					<p>{{ section2.text | exclusionfilter }}</p>
+					<ul *ngFor="let section3 of section2.elements">
+						<p>{{ section3.text | exclusionfilter }}</p>
+						<li *ngFor="let section4 of section3.elements">
+							<p>{{ section4.text | exclusionfilter }}</p>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</section>
+	</ion-item>
+
+	
+
+</ion-content>
+
