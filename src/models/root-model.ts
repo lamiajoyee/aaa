@@ -56,7 +56,8 @@
         export class RootObject {
             @deserialize public title: string;
             @deserialize public level: number;
-            //@deserialize public thumbnail: string;
+            @deserialize public thumbnail: string;
+            @deserialize public id: number;
             
             @deserializeAs(Content)
             content: Array<Content>;
@@ -67,13 +68,14 @@
             @deserializeAs(Section)    
             sections:  Array<Section>;
             
-            constructor(title : string, level : number, thumbnail: string, content:Array<Content>, images: Array<Image>, sections:Array<Section>) {
+            constructor(title : string, level : number, thumbnail: string, content:Array<Content>, images: Array<Image>, sections:Array<Section>, id:number) {
                 this.title = title;
                 this.level = level;
-                //this.thumbnail = thumbnail;
+                this.thumbnail = thumbnail;
                 this.content = content;
                 this.images = images;
                 this.sections = sections;
+                this.id = id;
             }
         }
         

@@ -5,6 +5,7 @@ import { HomePage } from '../pages/home/home';
 import { DetailsPage } from '../pages/details/details';
 import { RestapiService } from '../providers/restapi-service';
 import { ExclusionFilterPipe } from '../pipes/exclusion-filter-pipe';
+import { KeysPipe } from '../pipes/keys-pipe';
 import { Storage } from '@ionic/storage';
 
 @NgModule({
@@ -12,7 +13,8 @@ import { Storage } from '@ionic/storage';
     MyApp,
     HomePage,
     DetailsPage,
-    ExclusionFilterPipe
+    ExclusionFilterPipe,
+    KeysPipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)

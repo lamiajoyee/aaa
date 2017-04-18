@@ -10,9 +10,9 @@
 <ion-content class="info">
 	<div class="banner" [ngStyle]="{'background': 'url(' + bannerUrl + ') ,  linear-gradient( #beebe8 0%, rgb(230, 228, 176)  100%)', 'background-repeat':'no-repeat',  'background-position-x' :'center'}"></div>
 	
-	<ion-item *ngFor="let info of characterInfo.sections">
-
+	<ion-item *ngFor="let info of characterInfo">
 		<ion-card *ngIf="info.level==3">
+			<img src="{{info?.title | keys | async}}" />
 			<ion-card-header>
 				{{ info.title | exclusionfilter }}
 			</ion-card-header>

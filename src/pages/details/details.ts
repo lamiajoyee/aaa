@@ -12,29 +12,25 @@ import { Storage } from '@ionic/storage';
   providers: [RestapiService]
 })
 export class DetailsPage {
-  character: RootObject;	
+  	character: RootObject;	
 	characterInfo: Array<RootObject> =[];
 	bannerUrl: string;
 	title:string;
+	id:number;
 
 	sectionHeaders:Array<string>=["Appearance", "Personality and Interests", "Relationships", "In the Anime", "Anime", "Name", "Character Songs", "Trivia"];
 	
-	constructor(private navController: NavController, private navParams: NavParams, private movieService: RestapiService) {
-		this.character = navParams.get('character');
+	constructor(private navController: NavController, private navParams: NavParams, private movieService: RestapiService, storage:Storage) {
+		this.id = navParams.get('characterId');
 		this.bannerUrl = navParams.get('bannerUrl');
 		this.title = navParams.get('title');		
-				
-		this.movieService.fetchSingleItemDetails(this.character, "id").subscribe(
+			
+		this.movieService.getCharacterDetails(this.id).subscribe(
 					data => {
 							
 							this.characterInfo = data;
 							console.log("lol=", data);
-							/*this.character = Deserialize(data, RootObject);
 							
-							for(var char of this.character.sections){
-								console.log('lol2=', char["title"]);
-							}*/
-
 						},
 						err => {
 							console.log(err);

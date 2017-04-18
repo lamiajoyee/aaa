@@ -9,11 +9,80 @@ import { RootObject } from '../models/root-model';
 @Injectable()
 export class RestapiService {
 
-    baseUrl = "http://hetalia.wikia.com/api/v1/Articles/";
-    finalResponse1 = new Observable<RootObject[]>();
-    item:any;
-    constructor(public http: Http) {
+        baseUrl = "http://hetalia.wikia.com/api/v1/Articles/";
+        finalResponse1 = new Observable<RootObject[]>();
+        item:any;
+        constructor(public http: Http) {
+        
+        }
+
+        getAllCharacters(title:string): Observable<RootObject[]>{
+            let characters = this.http
+            .post(this.baseUrl+"Details&titles="+title, {headers: this.getHeaders()})
+            .map(mapCharacters);
+            return characters;
+        }
+
+        getCharacterDetails(id:number): Observable<RootObject[]>{
+            let characters = this.http
+            .get(this.baseUrl+"AsSimpleJson&id="+id)
+            .map(mapCharacterDetails);
+            return characters;
+        }
     
+        private getHeaders(){
+            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
+            let options = new RequestOptions({ headers: headers });
+            return options;
+        }
+    }
+
+    function mapCharacterDetails(response:Response): RootObject[]{
+        return toCharacterDetails(response.json().sections);
+    }
+
+    function toCharacterDetails(r:RootObject[]): RootObject[]{
+        var characters:RootObject[]=[];
+        for(var i in r){
+            let character = <RootObject>({
+                title: r[i].title,
+                level: r[i].level,
+                thumbnail: r[i].thumbnail,
+                id: r[i].id,
+                content:r[i].content,
+                images:r[i].images,
+                sections:r[i].sections
+            });
+            characters.push(character);
+        }
+        console.log('Parsed person2:', characters);
+        return characters;
+    }
+
+    function mapCharacters(response:Response): RootObject[]{
+        return toCharacters(response.json().items);
+    }
+
+    function toCharacters(r:RootObject[]): RootObject[]{
+        var characters:RootObject[]=[];
+        for(var i in r){
+            let character = <RootObject>({
+                title: r[i].title,
+                level: r[i].level,
+                thumbnail: r[i].thumbnail,
+                id: r[i].id,
+                content:r[i].content,
+                images:r[i].images,
+                sections:r[i].sections
+            });
+            characters.push(character);
+        }
+        console.log('Parsed person:', characters);
+        return characters;
+    }
+
+    /*function mapPerson(response:Response): RootObject{
+        return toPerson(response.json());
     }
 
     fetchSingleItem(title){
@@ -60,7 +129,6 @@ export class RestapiService {
         for(var id in fullObject.items){
              return fullObject.items[id];     
        }
-    }
-}
+    }*/
 
 
