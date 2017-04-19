@@ -20,22 +20,25 @@ export class DetailsPage {
 
 	sectionHeaders:Array<string>=["Appearance", "Personality and Interests", "Relationships", "In the Anime", "Anime", "Name", "Character Songs", "Trivia"];
 	
-	constructor(private navController: NavController, private navParams: NavParams, private movieService: RestapiService, storage:Storage) {
+
+	constructor(private navController: NavController, private navParams: NavParams, private restapiService: RestapiService,public storage:Storage) {
 		this.id = navParams.get('characterId');
 		this.bannerUrl = navParams.get('bannerUrl');
 		this.title = navParams.get('title');		
 			
-		this.movieService.getCharacterDetails(this.id).subscribe(
-					data => {
-							
-							this.characterInfo = data;
-							console.log("lol=", data);
-							
-						},
-						err => {
-							console.log(err);
-						},
-						() => console.log('Movie navig Complete')
-				);
-	}	
+		this.restapiService.getCharacterDetails(this.id).subscribe(
+					data => {						
+						this.characterInfo = data;
+						console.log("lol=", data);
+
+					},
+					err => {
+						console.log(err);
+					},
+					() => console.log('Movie navig Complete')
+			);
+		}
+
 }
+  	
+

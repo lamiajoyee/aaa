@@ -19,17 +19,24 @@ export class RestapiService {
         getAllCharacters(title:string): Observable<RootObject[]>{
             let characters = this.http
             .post(this.baseUrl+"Details&titles="+title, {headers: this.getHeaders()})
-            .map(mapCharacters);
+            .map(function(x) { return mapCharacter(x, "items"); });
             return characters;
         }
 
         getCharacterDetails(id:number): Observable<RootObject[]>{
             let characters = this.http
             .get(this.baseUrl+"AsSimpleJson&id="+id)
-            .map(mapCharacterDetails);
+            .map(function(x) { return mapCharacter(x, "sections"); });
             return characters;
         }
     
+        getAnyPropertyFromTitle(title:string, propertyName:string): Observable<string>{
+            let characters = this.http
+            .post(this.baseUrl+"Details&titles="+title, {headers: this.getHeaders()})
+            .map(function(x) { return mapProperty(x, propertyName); });
+            return characters;
+        }
+
         private getHeaders(){
             let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
             let options = new RequestOptions({ headers: headers });
@@ -37,11 +44,22 @@ export class RestapiService {
         }
     }
 
-    function mapCharacterDetails(response:Response): RootObject[]{
-        return toCharacterDetails(response.json().sections);
+    function mapCharacter(response:Response, key:string): RootObject[]{
+        // list
+        if(key=="sections"){
+            return returnCharacter(response.json().sections);
+        }
+        // details
+        else if(key=="items"){
+            return returnCharacter(response.json().items);
+        }
     }
 
-    function toCharacterDetails(r:RootObject[]): RootObject[]{
+    function mapProperty(response:Response, key:string): string{
+            return returnProperty(response.json().items, key);
+    }
+
+    function returnCharacter(r:RootObject[]): RootObject[]{
         var characters:RootObject[]=[];
         for(var i in r){
             let character = <RootObject>({
@@ -55,80 +73,15 @@ export class RestapiService {
             });
             characters.push(character);
         }
-        console.log('Parsed person2:', characters);
+        console.log('Parsed personinfinnity:', characters);
         return characters;
     }
 
-    function mapCharacters(response:Response): RootObject[]{
-        return toCharacters(response.json().items);
-    }
-
-    function toCharacters(r:RootObject[]): RootObject[]{
-        var characters:RootObject[]=[];
+    function returnProperty(r:RootObject, s:string): string{
+        //var r=response.json();
         for(var i in r){
-            let character = <RootObject>({
-                title: r[i].title,
-                level: r[i].level,
-                thumbnail: r[i].thumbnail,
-                id: r[i].id,
-                content:r[i].content,
-                images:r[i].images,
-                sections:r[i].sections
-            });
-            characters.push(character);
-        }
-        console.log('Parsed person:', characters);
-        return characters;
-    }
-
-    /*function mapPerson(response:Response): RootObject{
-        return toPerson(response.json());
-    }
-
-    fetchSingleItem(title){
-            var url = this.baseUrl + "Details&titles=" + title;
-           
-            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
-            let options = new RequestOptions({ headers: headers });
-            
-            var finalResponse = this.http.post(url , options).map((res: Response) => {
-               this.item = res.json();
-               return this.item;
-            })
-            return finalResponse;     
-    }
-        
-    fetchSingleItemDetails(title, paramType){
-        if(paramType=="id"){
-            var urlWithId='http://hetalia.wikia.com/api/v1/Articles/AsSimpleJson&id=' + title;
-            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
-            let options = new RequestOptions({ headers: headers });
-            var finalResponse = this.http.post(urlWithId , options).map((res => res.json()));
-            return finalResponse;
-        }
-        else{
-            var url1 = this.baseUrl + "Details&titles=" + title;
-            
-            let headers = new Headers({ 'Content-Type': 'application/json' , 'Api-User-Agent': 'lamiajoyee/1.0', 'origin':'https://www.mediawiki.org'});
-            let options = new RequestOptions({ headers: headers });
-            
-            var url2='http://hetalia.wikia.com/api/v1/Articles/AsSimpleJson&id=';
-        
-            this.finalResponse1= this.http.post(url1 , options).map((res: Response) => {
-                this.item = this.returnSingleObj(res.json());
-                return this.item;
-                })
-                .flatMap((item) => this.http.get(url2 + item.id)).map((res => res.json())).map(res => serialize<RootObject[]>(res));
-             
-            return this.finalResponse1;
-            
+            console.log("sdsssdsdds", r[i][s]);
+           return r[i][s];
         }
     }
- 
-    returnSingleObj(fullObject){
-        for(var id in fullObject.items){
-             return fullObject.items[id];     
-       }
-    }*/
-
-
+   

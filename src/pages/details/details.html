@@ -12,7 +12,7 @@
 	
 	<ion-item *ngFor="let info of characterInfo">
 		<ion-card *ngIf="info.level==3">
-			<img src="{{info?.title | keys | async}}" />
+			<img src="{{info.title | keys}}" />
 			<ion-card-header>
 				{{ info.title | exclusionfilter }}
 			</ion-card-header>

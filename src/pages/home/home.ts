@@ -26,13 +26,12 @@ export class HomePage {
 				this.restapiService.getAllCharacters(a).subscribe(
 					data => {
 							let temp = data;
-							//this.characters.push(data);
 							for(var id in temp){
                   this.characters.push(temp[id]);
                   this.bannerUrls.push(temp[id].thumbnail);
 
 									this.storage.ready().then(() => {
-				 						this.storage.set(temp[id].title+"-thumb", temp[id].thumbnail);
+				 						this.storage.set(temp[id].title.toString(), temp[id]);
      						  });
 							}
 						},
@@ -41,10 +40,7 @@ export class HomePage {
 						},
 						() => console.log('Data fetch Complete')
 				);
-			})
-			console.log("lol",this.bannerUrls);
-
-			
+			})	
   }
 
   itemTapped(event){ 
