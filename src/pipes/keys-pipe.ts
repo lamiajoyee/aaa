@@ -12,11 +12,12 @@ export class KeysPipe implements PipeTransform {
     charactersListArray : Array<string> = ["Italy", "Germany", "Japan", "America", "England", "England/UK/Britain", "France", "China", "Russia"];
 
     transform(value:any) : any {
-            this.charactersListArray.forEach((a)=>{
-                if(a==value){
-                   return this.restapiService.getAnyPropertyFromTitle(a, "thumbnail");
-                }
-            })
+            if(value==""){
+                return "lol";
+            }
+            else{
+                return value;
+            } 
 
   }
 }

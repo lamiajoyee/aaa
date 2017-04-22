@@ -4,7 +4,7 @@ import { NavController } from 'ionic-angular';
 import { RestapiService } from '../../providers/restapi-service';
 
 import { DetailsPage } from '../details/details';
-import { Storage } from '@ionic/storage';
+//import { Storage } from '@ionic/storage';
 import { RootObject } from "../../models/root-model";
 
 @Component({
@@ -17,7 +17,7 @@ export class HomePage {
 	characters : Array<RootObject> =[];
 	bannerUrls: Array<string>=[]; 
 
-  constructor(public navCtrl: NavController, public restapiService: RestapiService, public storage: Storage) {
+  constructor(public navCtrl: NavController, public restapiService: RestapiService) {
     this.getItems();
   }
 
@@ -29,10 +29,6 @@ export class HomePage {
 							for(var id in temp){
                   this.characters.push(temp[id]);
                   this.bannerUrls.push(temp[id].thumbnail);
-
-									this.storage.ready().then(() => {
-				 						this.storage.set(temp[id].title.toString(), temp[id]);
-     						  });
 							}
 						},
 						err => {

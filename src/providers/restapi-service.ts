@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Jsonp, URLSearchParams, Headers, RequestOptions, Response } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Observable } from 'rxjs/Rx';
-import { serialize } from "serializer.ts/Serializer";
+//import { serialize } from "serializer.ts/Serializer";
 import { RootObject } from '../models/root-model';
 
 
@@ -30,10 +30,10 @@ export class RestapiService {
             return characters;
         }
     
-        getAnyPropertyFromTitle(title:string, propertyName:string): Observable<string>{
+        getRootObject(title:string): Observable<RootObject>{
             let characters = this.http
             .post(this.baseUrl+"Details&titles="+title, {headers: this.getHeaders()})
-            .map(function(x) { return mapProperty(x, propertyName); });
+            .map(function(x) { return mapProperty(x); });
             return characters;
         }
 
@@ -55,8 +55,8 @@ export class RestapiService {
         }
     }
 
-    function mapProperty(response:Response, key:string): string{
-            return returnProperty(response.json().items, key);
+    function mapProperty(response:Response): RootObject{
+        return returnProperty(response.json().items);
     }
 
     function returnCharacter(r:RootObject[]): RootObject[]{
@@ -77,11 +77,10 @@ export class RestapiService {
         return characters;
     }
 
-    function returnProperty(r:RootObject, s:string): string{
+    function returnProperty(r:RootObject): RootObject{
         //var r=response.json();
         for(var i in r){
-            console.log("sdsssdsdds", r[i][s]);
-           return r[i][s];
+           return r[i];
         }
     }
    
